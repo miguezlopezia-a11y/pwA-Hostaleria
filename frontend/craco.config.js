@@ -1,6 +1,9 @@
 const path = require("path");
 
 module.exports = {
+  paths: {
+    appIndexJs: path.resolve(__dirname, "src/main.jsx"),
+  },
   eslint: {
     configure: {
       extends: ["plugin:react-hooks/recommended"],
