@@ -21,16 +21,14 @@ export const Home = () => {
     navigate(`/buscar?${params.toString()}`);
   };
 
-  const handleJoin = () => {
-    document.getElementById("help")?.scrollIntoView({ behavior: "smooth" });
-  };
+  const handleViewHostel = (id) => navigate(`/albergue/${id}`);
 
   return (
     <>
       <Hero onSearch={handleSearch} />
       <RouteCards onSelectRoute={handleSelectRoute} />
-      <HostelCards />
-      <CTASection onJoin={handleJoin} />
+      <HostelCards onViewHostel={handleViewHostel} />
+      <CTASection />
     </>
   );
 };
