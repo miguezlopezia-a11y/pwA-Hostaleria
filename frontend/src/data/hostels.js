@@ -10,6 +10,8 @@ export const hostels = [
     beds: 32,
     tags: ["Desayuno", "Wifi", "Lavandería", "Cocina"],
     rating: 4.7,
+    description:
+      "Albergue histórico situado en el corazón de Roncesvalles, punto de partida clásico del Camino Francés. Ofrece desayuno continental, cocina equipada y terraza con vistas al valle.",
   },
   {
     id: "h-002",
@@ -21,6 +23,8 @@ export const hostels = [
     beds: 24,
     tags: ["Wifi", "Secadora", "Jardín"],
     rating: 4.5,
+    description:
+      "Acogedora casa rehabilitada a pocos metros de la catedral de Tui. Ambiente familiar, jardín interior y servicio de lavandería para peregrinos.",
   },
   {
     id: "h-003",
@@ -32,5 +36,7 @@ export const hostels = [
     beds: 28,
     tags: ["Desayuno", "Wifi", "Vistas al mar", "Cena"],
     rating: 4.8,
+    description:
+      "Moderno albergue con vistas panorámicas al Cantábrico. Cocina comunitaria, cena de peregrinos y terraza perfecta para descansar tras la etapa costera.",
   },
 ];
