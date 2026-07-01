@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { Header } from "./components/Header";
 import { Footer } from "./components/Footer";
 import { Home } from "./pages/Home";
+import { Buscar } from "./pages/Buscar";
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
       <main data-testid="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/buscar" element={<div data-testid="buscar-page" />} />
+          <Route path="/buscar" element={<Buscar />} />
           <Route path="/albergue/:id" element={<div data-testid="albergue-page" />} />
           <Route path="/favoritos" element={<div data-testid="favoritos-page" />} />
         </Routes>

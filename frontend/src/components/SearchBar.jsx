@@ -1,11 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MapPin, Calendar, Route, Search } from "lucide-react";
 import { routes } from "../data/routes";
 
-export const SearchBar = ({ onSearch }) => {
-  const [location, setLocation] = useState("");
-  const [routeId, setRouteId] = useState("");
-  const [date, setDate] = useState("");
+export const SearchBar = ({
+  onSearch,
+  defaultLocation = "",
+  defaultRouteId = "",
+  defaultDate = "",
+}) => {
+  const [location, setLocation] = useState(defaultLocation);
+  const [routeId, setRouteId] = useState(defaultRouteId);
+  const [date, setDate] = useState(defaultDate);
+
+  useEffect(() => {
+    setLocation(defaultLocation);
+    setRouteId(defaultRouteId);
+    setDate(defaultDate);
+  }, [defaultLocation, defaultRouteId, defaultDate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
