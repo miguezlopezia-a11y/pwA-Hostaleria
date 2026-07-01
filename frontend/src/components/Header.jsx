@@ -1,15 +1,18 @@
 import { useState } from "react";
-import { Menu, X, MapPin } from "lucide-react";
+import { Menu, X, MapPin, Heart } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useFavoritos } from "../hooks/useFavoritos";
 
 const navItems = [
-  { label: "Buscar albergue", href: "#search" },
-  { label: "Rutas", href: "#routes" },
-  { label: "Soy albergue", href: "#cta-hostel" },
-  { label: "Ayuda", href: "#help" },
+  { label: "Buscar albergue", href: "/buscar" },
+  { label: "Rutas", href: "/#routes" },
+  { label: "Soy albergue", href: "/#cta-hostel" },
+  { label: "Ayuda", href: "/#help" },
 ];
 
 export const Header = () => {
   const [open, setOpen] = useState(false);
+  const { count } = useFavoritos();
 
   return (
     <header
@@ -17,8 +20,8 @@ export const Header = () => {
       className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/90 backdrop-blur"
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <a
-          href="#top"
+        <Link
+          to="/"
           data-testid="logo-link"
           className="flex items-center gap-2 text-slate-900"
         >
@@ -28,29 +31,45 @@ export const Header = () => {
           <span className="text-base font-semibold tracking-tight">
             Cama del Camino
           </span>
-        </a>
+        </Link>
 
         <nav className="hidden md:flex items-center gap-7">
           {navItems.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              data-testid={`nav-${item.href.replace("#", "")}`}
+              data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
               className="text-sm text-slate-700 transition-colors duration-150 hover:text-blue-600"
             >
               {item.label}
             </a>
           ))}
+          <Link
+            to="/favoritos"
+            data-testid="nav-favoritos"
+            className="relative inline-flex items-center gap-1.5 text-sm text-slate-700 transition-colors duration-150 hover:text-blue-600"
+          >
+            <Heart className="h-4 w-4" />
+            Favoritos
+            {count > 0 && (
+              <span
+                data-testid="favorites-badge"
+                className="absolute -right-3 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-medium text-white"
+              >
+                {count}
+              </span>
+            )}
+          </Link>
         </nav>
 
         <div className="hidden md:block">
-          <a
-            href="#search"
+          <Link
+            to="/buscar"
             data-testid="header-cta-search"
             className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-150 hover:bg-blue-700"
           >
             Buscar
-          </a>
+          </Link>
         </div>
 
         <button
@@ -74,21 +93,40 @@ export const Header = () => {
               <a
                 key={item.href}
                 href={item.href}
-                data-testid={`mobile-nav-${item.href.replace("#", "")}`}
+                data-testid={`mobile-nav-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
                 onClick={() => setOpen(false)}
                 className="py-2 text-sm text-slate-700 hover:text-blue-600"
               >
                 {item.label}
               </a>
             ))}
-            <a
-              href="#search"
+            <Link
+              to="/favoritos"
+              onClick={() => setOpen(false)}
+              data-testid="mobile-nav-favoritos"
+              className="flex items-center justify-between py-2 text-sm text-slate-700 hover:text-blue-600"
+            >
+              <span className="flex items-center gap-1.5">
+                <Heart className="h-4 w-4" />
+                Favoritos
+              </span>
+              {count > 0 && (
+                <span
+                  data-testid="mobile-favorites-badge"
+                  className="flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-600 px-1.5 text-xs font-medium text-white"
+                >
+                  {count}
+                </span>
+              )}
+            </Link>
+            <Link
+              to="/buscar"
               onClick={() => setOpen(false)}
               data-testid="mobile-cta-search"
               className="mt-2 rounded-md bg-blue-600 px-4 py-2 text-center text-sm font-medium text-white"
             >
               Buscar
-            </a>
+            </Link>
           </nav>
         </div>
       )}

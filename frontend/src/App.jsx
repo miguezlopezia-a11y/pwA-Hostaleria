@@ -4,6 +4,7 @@ import { Footer } from "./components/Footer";
 import { Home } from "./pages/Home";
 import { Buscar } from "./pages/Buscar";
 import { AlbergueDetalle } from "./pages/AlbergueDetalle";
+import { Favoritos } from "./pages/Favoritos";
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/buscar" element={<Buscar />} />
           <Route path="/albergue/:id" element={<AlbergueDetalle />} />
-          <Route path="/favoritos" element={<div data-testid="favoritos-page" />} />
+          <Route path="/favoritos" element={<Favoritos />} />
         </Routes>
       </main>
       <Footer />

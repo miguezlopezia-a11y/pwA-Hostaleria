@@ -1,4 +1,5 @@
 import { MapPin, Star, BedDouble } from "lucide-react";
+import { FavoriteButton } from "./FavoriteButton";
 
 const PlaceholderImage = ({ label }) => (
   <div
@@ -19,7 +20,13 @@ export const HostelCard = ({ hostel, onView }) => {
       data-testid={`hostel-card-${hostel.id}`}
       className="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow duration-150 hover:shadow-md"
     >
-      <PlaceholderImage label={hostel.name} />
+      <div className="relative">
+        <PlaceholderImage label={hostel.name} />
+        <FavoriteButton
+          id={hostel.id}
+          className="absolute right-3 top-3 shadow-sm"
+        />
+      </div>
 
       <div className="flex flex-1 flex-col gap-3 p-5">
         <div className="flex items-start justify-between gap-3">

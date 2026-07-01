@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { hostels } from "../data/hostels";
 import { HostelCard } from "./HostelCard";
 
@@ -21,13 +22,13 @@ export const HostelCards = ({ onViewHostel }) => {
               Albergues destacados
             </h2>
           </div>
-          <a
-            href="/buscar"
+          <Link
+            to="/buscar"
             data-testid="hostels-see-all"
             className="text-sm font-medium text-blue-600 hover:text-blue-700"
           >
             Ver todos los albergues →
-          </a>
+          </Link>
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">

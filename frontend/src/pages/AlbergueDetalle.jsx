@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { MapPin, Star, BedDouble, ArrowLeft, Send, Check } from "lucide-react";
 import { hostels } from "../data/hostels";
+import { FavoriteButton } from "../components/FavoriteButton";
 
 const PlaceholderImage = ({ label }) => (
   <div
@@ -68,7 +69,13 @@ export const AlbergueDetalle = () => {
 
         <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <PlaceholderImage label={hostel.name} />
+            <div className="relative">
+              <PlaceholderImage label={hostel.name} />
+              <FavoriteButton
+                id={hostel.id}
+                className="absolute right-3 top-3 shadow-sm"
+              />
+            </div>
 
             <div className="mt-6 rounded-xl border border-slate-200 bg-white p-6">
               <div className="flex items-start justify-between gap-4">
