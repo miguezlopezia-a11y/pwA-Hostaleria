@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { MapPin, Star, BedDouble, ArrowLeft, Send, Check } from "lucide-react";
 import { hostels } from "../data/hostels";
@@ -28,6 +29,10 @@ export const AlbergueDetalle = () => {
   if (!hostel) {
     return (
       <section className="min-h-screen border-b border-slate-200 bg-slate-50 py-16">
+        <Helmet>
+          <title>Albergue no encontrado — Cama del Camino</title>
+          <meta name="robots" content="noindex" />
+        </Helmet>
         <div className="mx-auto max-w-6xl px-4 text-center sm:px-6">
           <h1 className="text-2xl font-semibold text-slate-900">
             Albergue no encontrado
@@ -57,6 +62,11 @@ export const AlbergueDetalle = () => {
       data-testid="albergue-page"
       className="min-h-screen border-b border-slate-200 bg-slate-50 py-8 sm:py-12"
     >
+      <Helmet>
+        <title>{hostel.name} — Cama del Camino</title>
+        <meta name="description" content={`${hostel.name} en ${hostel.town}. ${hostel.route}, ${hostel.stage}. Precio desde ${hostel.pricePerBed}€ por cama.`} />
+      </Helmet>
+
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <button
           type="button"
@@ -147,9 +157,7 @@ export const AlbergueDetalle = () => {
                     <Check className="h-4 w-4" />
                     Mensaje enviado
                   </div>
-                  <p className="mt-1">
-                    El albergue responderá a {form.email} cuando la funcionalidad esté activa.
-                  </p>
+                  <p className="mt-1">El albergue responderá a {form.email} cuando la funcionalidad esté activa.</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="mt-6 space-y-4">

@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Helmet } from "react-helmet-async";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { hostels } from "../data/hostels";
 import { routes } from "../data/routes";
@@ -53,6 +54,14 @@ export const Buscar = () => {
       data-testid="buscar-page"
       className="min-h-screen border-b border-slate-200 bg-slate-50"
     >
+      <Helmet>
+        <title>Buscar albergues — Cama del Camino</title>
+        <meta
+          name="description"
+          content="Busca albergues del Camino de Santiago por localidad, ruta o etapa."
+        />
+      </Helmet>
+
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
           Buscar albergues

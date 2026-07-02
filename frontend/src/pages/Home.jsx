@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useNavigate } from "react-router-dom";
 import { Hero } from "../components/Hero";
 import { RouteCards } from "../components/RouteCards";
@@ -25,6 +26,19 @@ export const Home = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Cama del Camino — Albergues del Camino de Santiago</title>
+        <meta
+          name="description"
+          content="Directorio independiente de albergues del Camino de Santiago. Sin comisiones, directamente con el albergue."
+        />
+        <meta property="og:title" content="Cama del Camino — Albergues del Camino de Santiago" />
+        <meta
+          property="og:description"
+          content="Directorio independiente de albergues del Camino de Santiago. Sin comisiones."
+        />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <Hero onSearch={handleSearch} />
       <RouteCards onSelectRoute={handleSelectRoute} />
       <HostelCards onViewHostel={handleViewHostel} />

@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+import { Link, useNavigate } from "react-router-dom";
 import { Heart, ArrowLeft } from "lucide-react";
 import { hostels } from "../data/hostels";
 import { useFavoritos } from "../hooks/useFavoritos";
@@ -7,6 +8,7 @@ import { HostelCard } from "../components/HostelCard";
 
 export const Favoritos = () => {
   const { ids } = useFavoritos();
+  const navigate = useNavigate();
   const favorites = useMemo(
     () => hostels.filter((h) => ids.includes(h.id)),
     [ids],
@@ -17,6 +19,14 @@ export const Favoritos = () => {
       data-testid="favoritos-page"
       className="min-h-screen border-b border-slate-200 bg-slate-50 py-10 sm:py-14"
     >
+      <Helmet>
+        <title>Mis favoritos — Cama del Camino</title>
+        <meta
+          name="description"
+          content="Tus albergues guardados del Camino de Santiago."
+        />
+      </Helmet>
+
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Link
           to="/"
@@ -48,7 +58,11 @@ export const Favoritos = () => {
         ) : (
           <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {favorites.map((h) => (
-              <HostelCard key={h.id} hostel={h} onView={() => {}} />
+              <HostelCard
+                key={h.id}
+                hostel={h}
+                onView={() => navigate(`/albergue/${h.id}`)}
+              />
             ))}
           </div>
         )}
