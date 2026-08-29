@@ -32,4 +32,18 @@ module.exports = {
       return webpackConfig;
     },
   },
+  jest: {
+    configure: {
+      // react-router-dom@7 tiene el campo "main" apuntando a dist/main.js,
+      // que no existe en el paquete publicado — jest 27 (CRA 5) falla al
+      // resolverlo. Se mapea al build CJS real. Innecesario tras migrar a Vitest.
+      moduleNameMapper: {
+        "^react-router-dom$":
+          "<rootDir>/node_modules/react-router-dom/dist/index.js",
+        // subpath export "react-router/dom" que jest 27 tampoco resuelve
+        "^react-router/dom$":
+          "<rootDir>/node_modules/react-router/dist/development/dom-export.js",
+      },
+    },
+  },
 };
