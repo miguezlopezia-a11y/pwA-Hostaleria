@@ -5,6 +5,7 @@ import { Home } from "./pages/Home";
 import { Buscar } from "./pages/Buscar";
 import { AlbergueDetalle } from "./pages/AlbergueDetalle";
 import { Favoritos } from "./pages/Favoritos";
+import { Peregrino } from "./pages/Peregrino";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/buscar" element={<Buscar />} />
           <Route path="/albergue/:id" element={<AlbergueDetalle />} />
           <Route path="/favoritos" element={<Favoritos />} />
+          <Route path="/peregrino" element={<Peregrino />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
