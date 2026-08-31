@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { MapPin, Star, BedDouble, ArrowLeft, Send, Check } from "lucide-react";
-import { hostels } from "../data/hostels";
+import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
+import { MapPin, BedDouble, ArrowLeft, Send, Check } from "lucide-react";
+import { useDirectory } from "../hooks/useDirectory";
 import { FavoriteButton } from "../components/FavoriteButton";
+import { ReviewBadges } from "../components/ReviewBadges";
 
 const PlaceholderImage = ({ label }) => (
   <div
@@ -21,12 +22,26 @@ const PlaceholderImage = ({ label }) => (
 export const AlbergueDetalle = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const hostel = useMemo(() => hostels.find((h) => h.id === id), [id]);
+  const [searchParams] = useSearchParams();
+  const date = searchParams.get("date") || "";
+
+  const { hostales, loading, error, date: availabilityDate } = useDirectory(date);
+  const hostel = useMemo(() => hostales.find((h) => h.id === id), [hostales, id]);
 
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sent, setSent] = useState(false);
 
-  if (!hostel) {
+  if (loading) {
+    return (
+      <section className="min-h-screen border-b border-slate-200 bg-slate-50 py-16">
+        <p className="text-center text-slate-500" data-testid="albergue-loading">
+          Cargando albergue...
+        </p>
+      </section>
+    );
+  }
+
+  if (error || !hostel) {
     return (
       <section className="min-h-screen border-b border-slate-200 bg-slate-50 py-16">
         <Helmet>
@@ -38,7 +53,7 @@ export const AlbergueDetalle = () => {
             Albergue no encontrado
           </h1>
           <p className="mt-2 text-slate-600">
-            El albergue que buscas no existe o ha sido eliminado.
+            {error || "El albergue que buscas no existe o ha sido eliminado."}
           </p>
           <Link
             to="/buscar"
@@ -64,7 +79,7 @@ export const AlbergueDetalle = () => {
     >
       <Helmet>
         <title>{hostel.name} — Cama del Camino</title>
-        <meta name="description" content={`${hostel.name} en ${hostel.town}. ${hostel.route}, ${hostel.stage}. Precio desde ${hostel.pricePerBed}€ por cama.`} />
+        <meta name="description" content={`${hostel.name} en ${hostel.address}. Precio desde ${hostel.pricePerBed}€ por cama.`} />
       </Helmet>
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -95,39 +110,20 @@ export const AlbergueDetalle = () => {
                   </h1>
                   <div className="mt-2 flex items-center gap-2 text-sm text-slate-600">
                     <MapPin className="h-4 w-4 text-slate-400" />
-                    <span>
-                      {hostel.town} · {hostel.route} · {hostel.stage}
-                    </span>
+                    <span>{hostel.address}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-700">
-                  <Star className="h-4 w-4 fill-blue-600 text-blue-600" />
-                  {hostel.rating}
-                </div>
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-1.5">
-                {hostel.tags.map((t) => (
-                  <span
-                    key={t}
-                    className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-700"
-                  >
-                    {t}
-                  </span>
-                ))}
+              <div className="mt-4">
+                <ReviewBadges
+                  googleReviewUrl={hostel.googleReviewUrl}
+                  bookingReviewUrl={hostel.bookingReviewUrl}
+                  testIdPrefix={`albergue-${hostel.id}`}
+                />
               </div>
-
-              {hostel.description && (
-                <p className="mt-6 text-base leading-relaxed text-slate-700">
-                  {hostel.description}
-                </p>
-              )}
 
               <div className="mt-6 grid grid-cols-2 gap-4 border-t border-slate-100 pt-6 sm:grid-cols-3">
-                <div>
-                  <p className="text-xs text-slate-500">Camas</p>
-                  <p className="text-lg font-semibold text-slate-900">{hostel.beds}</p>
-                </div>
                 <div>
                   <p className="text-xs text-slate-500">Precio por cama</p>
                   <p className="text-lg font-semibold text-slate-900">
@@ -135,8 +131,27 @@ export const AlbergueDetalle = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">Etapa</p>
-                  <p className="text-lg font-semibold text-slate-900">{hostel.stage}</p>
+                  <p className="text-xs text-slate-500">
+                    Disponibilidad ({availabilityDate})
+                  </p>
+                  {hostel.freeBeds === null ? (
+                    <p className="text-lg font-semibold text-slate-900">—</p>
+                  ) : hostel.freeBeds > 0 ? (
+                    <p
+                      className="text-lg font-semibold text-green-700"
+                      data-testid="albergue-availability"
+                    >
+                      {hostel.freeBeds} cama{hostel.freeBeds === 1 ? "" : "s"} libre
+                      {hostel.freeBeds === 1 ? "" : "s"}
+                    </p>
+                  ) : (
+                    <p
+                      className="text-lg font-semibold text-red-600"
+                      data-testid="albergue-availability"
+                    >
+                      Sin disponibilidad
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
