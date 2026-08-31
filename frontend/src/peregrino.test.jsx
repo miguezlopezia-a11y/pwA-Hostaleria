@@ -3,7 +3,9 @@ import { renderApp } from "./test-utils";
 import { SESSION_KEY } from "./pages/Peregrino";
 
 // Mock del cliente Supabase: la RPC verify_peregrino_session se simula aquí.
-let mockRpcResult = { data: { valid: false, error: "token inválido" }, error: null };
+// La RPC devuelve un único mensaje genérico "sesión inválida" para cualquier
+// fallo (reserva inexistente, token incorrecto o caducada) — anti-enumeración.
+let mockRpcResult = { data: { valid: false, error: "sesión inválida" }, error: null };
 vi.mock("./lib/supabase", () => ({
   supabase: { rpc: async () => mockRpcResult },
 }));
@@ -19,28 +21,29 @@ const SESION_VALIDA = {
 
 beforeEach(() => {
   localStorage.clear();
-  mockRpcResult = { data: { valid: false, error: "token inválido" }, error: null };
+  mockRpcResult = { data: { valid: false, error: "sesión inválida" }, error: null };
 });
 
-test("token inválido → error claro, no crashea, no guarda sesión", async () => {
+test("token inválido → error genérico, no crashea, no guarda sesión", async () => {
   renderApp("/peregrino?r=r-1&t=token-malo");
 
   await waitFor(() =>
     expect(screen.getByTestId("peregrino-error")).toBeInTheDocument(),
   );
   expect(screen.getByTestId("peregrino-error")).toHaveTextContent(
-    "token inválido",
+    "sesión inválida",
   );
   expect(localStorage.getItem(SESSION_KEY)).toBeNull();
 });
 
-test("token expirado → error claro, no guarda sesión", async () => {
-  mockRpcResult = { data: { valid: false, error: "sesión expirada" }, error: null };
+test("token expirado → mismo error genérico (anti-enumeración), no guarda sesión", async () => {
+  // La RPC no distingue expirado de inválido: mismo mensaje en ambos casos.
+  mockRpcResult = { data: { valid: false, error: "sesión inválida" }, error: null };
   renderApp("/peregrino?r=r-1&t=token-viejo");
 
   await waitFor(() =>
     expect(screen.getByTestId("peregrino-error")).toHaveTextContent(
-      "sesión expirada",
+      "sesión inválida",
     ),
   );
   expect(localStorage.getItem(SESSION_KEY)).toBeNull();
