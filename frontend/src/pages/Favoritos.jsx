@@ -2,16 +2,17 @@ import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { Heart, ArrowLeft } from "lucide-react";
-import { hostels } from "../data/hostels";
+import { useDirectory } from "../hooks/useDirectory";
 import { useFavoritos } from "../hooks/useFavoritos";
 import { HostelCard } from "../components/HostelCard";
 
 export const Favoritos = () => {
   const { ids } = useFavoritos();
   const navigate = useNavigate();
+  const { hostales, loading } = useDirectory();
   const favorites = useMemo(
-    () => hostels.filter((h) => ids.includes(h.id)),
-    [ids],
+    () => hostales.filter((h) => ids.includes(h.id)),
+    [hostales, ids],
   );
 
   return (
@@ -40,7 +41,11 @@ export const Favoritos = () => {
           Mis favoritos
         </h1>
 
-        {favorites.length === 0 ? (
+        {loading ? (
+          <p className="mt-8 text-center text-slate-500" data-testid="favoritos-loading">
+            Cargando albergues...
+          </p>
+        ) : favorites.length === 0 ? (
           <div className="mt-8 rounded-xl border border-slate-200 bg-white p-10 text-center">
             <div className="mx-flex mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
               <Heart className="h-6 w-6" />

@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { hostels } from "../data/hostels";
-import { routes } from "../data/routes";
+import { useDirectory } from "../hooks/useDirectory";
 import { SearchBar } from "../components/SearchBar";
 import { HostelCard } from "../components/HostelCard";
 
@@ -11,31 +10,26 @@ export const Buscar = () => {
   const navigate = useNavigate();
 
   const location = searchParams.get("location") || "";
-  const routeId = searchParams.get("routeId") || "";
   const date = searchParams.get("date") || "";
 
-  const routeName = useMemo(
-    () => routes.find((r) => r.id === routeId)?.name || "",
-    [routeId],
-  );
+  // Datos reales: hostales + disponibilidad para la fecha del buscador
+  // (o hoy si no hay fecha) + reseñas. La lógica de ocupación vive en la RPC.
+  const { hostales, loading, error, date: availabilityDate } = useDirectory(date);
 
   const filtered = useMemo(() => {
     const term = location.trim().toLowerCase();
-    return hostels.filter((h) => {
-      const matchesLocation =
+    return hostales.filter((h) => {
+      return (
         !term ||
-        h.town.toLowerCase().includes(term) ||
-        h.stage.toLowerCase().includes(term) ||
-        h.name.toLowerCase().includes(term);
-      const matchesRoute = !routeId || h.route === routeName;
-      return matchesLocation && matchesRoute;
+        h.name.toLowerCase().includes(term) ||
+        h.address.toLowerCase().includes(term)
+      );
     });
-  }, [location, routeId, routeName]);
+  }, [hostales, location]);
 
   const handleSearch = (payload) => {
     const params = new URLSearchParams();
     if (payload.location) params.set("location", payload.location);
-    if (payload.routeId) params.set("routeId", payload.routeId);
     if (payload.date) params.set("date", payload.date);
     setSearchParams(params);
   };
@@ -44,9 +38,7 @@ export const Buscar = () => {
 
   const headerText = location
     ? `${filtered.length} albergue${filtered.length === 1 ? "" : "s"} en ${location}`
-    : routeName
-      ? `${filtered.length} albergue${filtered.length === 1 ? "" : "s"} en ${routeName}`
-      : `${filtered.length} albergue${filtered.length === 1 ? "" : "s"} encontrados`;
+    : `${filtered.length} albergue${filtered.length === 1 ? "" : "s"} encontrados`;
 
   return (
     <section
@@ -58,7 +50,7 @@ export const Buscar = () => {
         <title>Buscar albergues — Cama del Camino</title>
         <meta
           name="description"
-          content="Busca albergues del Camino de Santiago por localidad, ruta o etapa."
+          content="Busca albergues del Camino de Santiago por localidad y fecha."
         />
       </Helmet>
 
@@ -71,7 +63,6 @@ export const Buscar = () => {
           <SearchBar
             onSearch={handleSearch}
             defaultLocation={location}
-            defaultRouteId={routeId}
             defaultDate={date}
           />
         </div>
@@ -79,8 +70,19 @@ export const Buscar = () => {
         <p className="mt-8 text-sm font-medium text-slate-600" data-testid="search-results-count">
           {headerText}
         </p>
+        <p className="mt-1 text-xs text-slate-500" data-testid="availability-date">
+          Disponibilidad para el {availabilityDate}
+        </p>
 
-        {filtered.length === 0 ? (
+        {loading ? (
+          <p className="mt-8 text-center text-slate-500" data-testid="buscar-loading">
+            Cargando albergues...
+          </p>
+        ) : error ? (
+          <p className="mt-8 text-center text-red-600" data-testid="buscar-error">
+            {error}
+          </p>
+        ) : filtered.length === 0 ? (
           <div className="mt-8 rounded-xl border border-slate-200 bg-white p-8 text-center">
             <p className="text-slate-700">
               No encontramos albergues para tu búsqueda.

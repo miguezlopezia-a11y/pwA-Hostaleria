@@ -1,5 +1,6 @@
-import { MapPin, Star, BedDouble } from "lucide-react";
+import { MapPin, BedDouble } from "lucide-react";
 import { FavoriteButton } from "./FavoriteButton";
+import { ReviewBadges } from "./ReviewBadges";
 
 const PlaceholderImage = ({ label }) => (
   <div
@@ -14,6 +15,8 @@ const PlaceholderImage = ({ label }) => (
   </div>
 );
 
+// Modelo real (useDirectory): { id (=slug), name, address, pricePerBed,
+// freeBeds (null si la RPC no devolvió fila), googleReviewUrl, bookingReviewUrl }
 export const HostelCard = ({ hostel, onView }) => {
   return (
     <article
@@ -29,31 +32,36 @@ export const HostelCard = ({ hostel, onView }) => {
       </div>
 
       <div className="flex flex-1 flex-col gap-3 p-5">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="text-lg font-semibold text-slate-900">{hostel.name}</h3>
-          <div className="flex items-center gap-1 text-sm text-slate-700">
-            <Star className="h-4 w-4 fill-blue-600 text-blue-600" />
-            <span>{hostel.rating}</span>
-          </div>
-        </div>
+        <h3 className="text-lg font-semibold text-slate-900">{hostel.name}</h3>
 
         <div className="flex items-center gap-2 text-sm text-slate-600">
           <MapPin className="h-4 w-4 text-slate-400" />
-          <span>
-            {hostel.town} · {hostel.route} · {hostel.stage}
-          </span>
+          <span>{hostel.address}</span>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
-          {hostel.tags.map((t) => (
-            <span
-              key={t}
-              className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-700"
+        {hostel.freeBeds !== null &&
+          (hostel.freeBeds > 0 ? (
+            <p
+              className="text-sm font-medium text-green-700"
+              data-testid={`hostel-availability-${hostel.id}`}
             >
-              {t}
-            </span>
+              {hostel.freeBeds} cama{hostel.freeBeds === 1 ? "" : "s"} libre
+              {hostel.freeBeds === 1 ? "" : "s"}
+            </p>
+          ) : (
+            <p
+              className="text-sm font-medium text-red-600"
+              data-testid={`hostel-availability-${hostel.id}`}
+            >
+              Sin disponibilidad
+            </p>
           ))}
-        </div>
+
+        <ReviewBadges
+          googleReviewUrl={hostel.googleReviewUrl}
+          bookingReviewUrl={hostel.bookingReviewUrl}
+          testIdPrefix={`hostel-${hostel.id}`}
+        />
 
         <div className="mt-auto flex items-end justify-between border-t border-slate-100 pt-4">
           <div>

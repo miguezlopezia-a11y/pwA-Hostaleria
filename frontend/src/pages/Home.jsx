@@ -11,16 +11,14 @@ export const Home = () => {
   const handleSearch = (payload) => {
     const params = new URLSearchParams();
     if (payload.location) params.set("location", payload.location);
-    if (payload.routeId) params.set("routeId", payload.routeId);
     if (payload.date) params.set("date", payload.date);
     navigate(`/buscar?${params.toString()}`);
   };
 
-  const handleSelectRoute = (routeId) => {
-    const params = new URLSearchParams();
-    params.set("routeId", routeId);
-    navigate(`/buscar?${params.toString()}`);
-  };
+  // Las rutas del Camino son contenido informativo: los hostales reales no
+  // tienen columna de ruta, así que la tarjeta lleva al directorio completo
+  // (no se filtra por ruta — no hay dato que lo respalde).
+  const handleSelectRoute = () => navigate("/buscar");
 
   const handleViewHostel = (id) => navigate(`/albergue/${id}`);
 

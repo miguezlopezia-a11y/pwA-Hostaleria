@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
-import { hostels } from "../data/hostels";
+import { useDirectory } from "../hooks/useDirectory";
 import { HostelCard } from "./HostelCard";
 
 export const HostelCards = ({ onViewHostel }) => {
+  const { hostales, loading } = useDirectory();
+
   return (
     <section
       id="hostels"
@@ -31,11 +33,17 @@ export const HostelCards = ({ onViewHostel }) => {
           </Link>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {hostels.map((h) => (
-            <HostelCard key={h.id} hostel={h} onView={() => onViewHostel?.(h.id)} />
-          ))}
-        </div>
+        {loading ? (
+          <p className="mt-10 text-center text-slate-500" data-testid="hostels-loading">
+            Cargando albergues...
+          </p>
+        ) : (
+          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {hostales.map((h) => (
+              <HostelCard key={h.id} hostel={h} onView={() => onViewHostel?.(h.id)} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
